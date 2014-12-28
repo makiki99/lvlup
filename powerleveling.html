@@ -1,0 +1,221 @@
+<!doctype html>
+<head>
+	<!--hi lurker!-->
+	<title>Power Leveling RPG</title>
+	<style>
+		button {
+			width: 250px
+		}
+	</style>
+</head>
+<body style='font-family:sans-serif;'>
+
+	<div id='header' style='position:absolute; top:0%; left:0%; height:30%; width:100%; text-align: center;'>
+		<h1>$<span id='money'>0</span><br/></h1>
+		<h3><span id='time'>0:00.0</span><br/></h3>
+		<span id='moneypersec'>0</span> $/s<br/>
+		<span id='exppersec'>0</span> xp/s<br/>
+	</div>
+	
+	<div id='player' style='position:absolute; top:30%; left:0%; height:70%; width:50%; text-align: center;'>
+		<table style='width: 300px; margin:auto; border:1px black solid;'>
+			<colgroup>
+				<col style='width: 90px;'>
+				<col style='width: 210px;'>
+			</colgroup>
+			<tr>
+				<td>Level</td>
+				<td id='lvl'>1</td>
+			</tr>
+			<tr>
+				<td>EXP</td>
+				<td><span id='exp'>0</span>/<span id='expnext'>0</span></td>
+			</tr>
+			<tr>
+				<td>Power</td>
+				<td id='power'>0</td>
+			</tr>
+			<tr>
+				<td>Multipler</td>
+				<td id='multipler'>0</td>
+			</tr>
+			<tr>
+				<td>DPS</td>
+				<td id='dps'>0</td>
+			</tr>
+		</table>
+		<p>
+			<button onclick='buypower()' id='buypower'>Power training</button></br>
+			Cost: $<span id='powercost'>0</span></br>
+			Power +<span id='powergain'>5.2</span>
+		</p>
+		<p>
+			<button onclick='buymultipler()' id='buymultipler'>Multipler incerase</button></br>
+			Cost: $<span id='multiplercost'>0</span></br>
+			Multipler +0.05
+		</p>
+	</div>
+	
+	<div id='enemy' style='position:absolute; top:30%; left:50%; height:70%; width:50%; text-align: center;'>
+		<table style='width: 300px; margin:auto; border:1px black solid;'>
+			<colgroup>
+				<col style='width: 90px;'>
+				<col style='width: 210px;'>
+			</colgroup>
+			<tr>
+				<td>Level</td>
+				<td id='enemylvl'>1</td>
+			</tr>
+			<tr>
+				<td>HP</td>
+				<td><span id='enemyhp'>0</span>/<span id='enemymaxhp'>0</span></td>
+			</tr>
+			<tr>
+				<td>EXP</td>
+				<td id='enemyexp'>0</td>
+			</tr>
+			<tr>
+				<td>$</td>
+				<td id='enemymoney'>0</td>
+			</tr>
+		</table>
+		<p>
+			<button onclick=buyenemy() id='buyenemy'>Level up enemies</button></br>
+			Cost: $<span id='enemycost'>0</span></br>
+			Enemies' level +1</br>
+			Enemies' health +20%</br>
+			XP reward +33%</br>
+			$ reward +20%
+		</p>
+	</div>
+	
+	<script>
+		//time vars
+			var t1 = 0
+			var t2 = 0
+			var t3 = 0
+			var t4 = 0
+		//player vars
+			var lvl = 0
+			var money = 0
+			var exp = 0
+			var expnext = 0
+			var powerlevel = 8
+			var power = 0
+			var multipler = 0.50
+		//enemy vars
+			var enemylvl = 1
+			var enemyhp = 50
+			var enemymaxhp = 50
+			var enemyexp = 40
+			var enemymoney = 25
+		//cost vars - look for lvlup function for base values
+			var powercost =         666
+			var multiplercost =     666
+			var enemycost =         666
+		//functions
+		lvlup()
+		function buypower() {
+			if (money >= powercost) {
+				money = money - powercost
+				powercost = Math.ceil(powercost * 1.2)
+				powerlevel = powerlevel + 1
+				power = powerlevel * (lvl * 0.2 + 5)
+			}
+		}
+		function buymultipler() {
+			if (money >= multiplercost) {
+				money = money - multiplercost
+				multiplercost = Math.ceil(multiplercost * 1.2)
+				multipler = multipler + 0.05
+			}
+		}
+		function buyenemy() {
+			if (money >= enemycost) {
+				money = money - enemycost
+				enemycost = Math.ceil(enemycost * 1.35)
+				enemylvl++
+				enemymaxhp = Math.floor(enemymaxhp * 1.2)
+				enemyhp = enemymaxhp
+				enemyexp = Math.floor(enemyexp * 1.33)
+				enemymoney = Math.floor(enemymoney * 1.2)
+			}
+		}
+		function redraw() {
+			document.getElementById('money').innerHTML = money
+			document.getElementById('time').innerHTML = String(t4)+':'+String(t3)+String(t2)+'.'+String(t1)
+			document.getElementById('moneypersec').innerHTML = Math.round((power*multipler)/enemymaxhp*enemymoney)
+			document.getElementById('exppersec').innerHTML = Math.round((power*multipler)/enemymaxhp*enemyexp)
+			document.getElementById('lvl').innerHTML = lvl
+			document.getElementById('exp').innerHTML = exp
+			document.getElementById('expnext').innerHTML = expnext
+			document.getElementById('power').innerHTML = Math.round(power*10)/10
+			document.getElementById('multipler').innerHTML = Math.round(multipler*100)/100
+			document.getElementById('dps').innerHTML = Math.round(power*multipler*10)/10
+			document.getElementById('powercost').innerHTML = powercost
+			document.getElementById('powergain').innerHTML = Math.round(lvl * 2 + 50)/10
+			document.getElementById('multiplercost').innerHTML = multiplercost
+			document.getElementById('enemylvl').innerHTML = enemylvl
+			document.getElementById('enemyhp').innerHTML = Math.round(enemyhp)
+			document.getElementById('enemymaxhp').innerHTML = enemymaxhp
+			document.getElementById('enemyexp').innerHTML = enemyexp
+			document.getElementById('enemymoney').innerHTML = enemymoney
+			document.getElementById('enemycost').innerHTML = enemycost
+			if (money < powercost) {document.getElementById('buypower').disabled = true} else {document.getElementById('buypower').disabled = false}
+			if (money < multiplercost) {document.getElementById('buymultipler').disabled = true} else {document.getElementById('buymultipler').disabled = false}
+			if (money < enemycost) {document.getElementById('buyenemy').disabled = true} else {document.getElementById('buyenemy').disabled = false}
+		}
+		function lvlup() {
+			lvl++
+			exp = exp - expnext
+			expnext = Math.floor(Math.pow(1.33,lvl-1)*100)
+			powercost = Math.ceil(powercost*0.92)
+			multiplercost = Math.ceil(multiplercost*0.92)
+			enemycost = Math.ceil(enemycost*0.9)
+			power = powerlevel * (lvl * 0.2 + 5)
+			if (lvl==1) {
+				//base costs
+				powercost = 25
+				multiplercost = 25
+				enemycost = 50
+			}
+			if (lvl>=40) {endgame()}
+		}
+		function tick() {
+			//time
+			t1++
+			if (t1>9){
+				t1 = 0
+				t2++
+			}
+			if (t2>9){
+				t2 = 0
+				t3++
+			}
+			if (t3>5){
+				t3 = 0
+				t4++
+			}
+			//damage
+			if (enemyhp <= 0) {
+				enemyhp = enemymaxhp
+				exp = exp + enemyexp
+				//high level enemy bonus
+				if(lvl<enemylvl){exp = exp + Math.round(enemyexp * 0.1 * (enemylvl-lvl))}
+				money = money + enemymoney
+				if(enemylvl<lvl){money = money + Math.round(enemymoney * 0.025 * (lvl-enemylvl))}
+				if (exp >= expnext) {lvlup()}
+			} else {
+				enemyhp = enemyhp - power*multipler/10
+				if (enemyhp < 0) {enemyhp=0}
+			}
+			//obligatory redraw function
+			redraw()
+		}
+		function endgame() {
+			clearInterval(interval)
+			document.body.innerHTML = '<div style="text-align:center; font-size:2em;">You have finished the game in</div><div style="text-align:center; font-size:3em;">'+String(t4)+':'+String(t3)+String(t2)+'.'+String(t1)+'</div>'
+		}
+		var interval = setInterval(function(){tick()},100)
+	</script>
+</body>
