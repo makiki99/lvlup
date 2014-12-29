@@ -1,4 +1,5 @@
 <!doctype html>
+<html>
 <head>
 	<!--hi lurker!-->
 	<title>Power Leveling RPG</title>
@@ -6,10 +7,23 @@
 		button {
 			width: 250px
 		}
+		.startmenu {
+			display:block;
+			position:relative;
+			font-size:2.5em;
+			margin: 0 auto;
+			height: 150px;
+			width: 550px;
+		}
 	</style>
 </head>
 <body style='font-family:sans-serif;'>
-
+	<div id='start'>
+		<button onclick='startSpeedrun()' class='startmenu' style='top:50px;'>Speedrun mode</button>
+		<button onclick='startInfinite()' class='startmenu' style='top:100px;' disabled>Infinite mode (soon&#0153;)</button>
+	</div>
+	
+	<div id='main' style='display:none'>
 	<div id='header' style='position:absolute; top:0%; left:0%; height:30%; width:100%; text-align: center;'>
 		<h1>$<span id='money'>0</span><br/></h1>
 		<h3><span id='time'>0:00.0</span><br/></h3>
@@ -50,7 +64,7 @@
 			Power +<span id='powergain'>5.2</span>
 		</p>
 		<p>
-			<button onclick='buymultipler()' id='buymultipler'>Multipler incerase</button></br>
+			<button onclick='buymultipler()' id='buymultipler'>Multipler increase</button></br>
 			Cost: $<span id='multiplercost'>0</span></br>
 			Multipler +0.05
 		</p>
@@ -72,11 +86,11 @@
 			</tr>
 			<tr>
 				<td>EXP</td>
-				<td id='enemyexp'>0</td>
+				<td><span id='enemyexp'>0</span><span id='bonusexp'></span></td>
 			</tr>
 			<tr>
 				<td>$</td>
-				<td id='enemymoney'>0</td>
+				<td><span id='enemymoney'>0</span><span id='bonusmoney'></span></td>
 			</tr>
 		</table>
 		<p>
@@ -88,134 +102,170 @@
 			$ reward +20%
 		</p>
 	</div>
+	</div>
 	
 	<script>
+		//main objects
+			var save = {}
+			var temp = {}
 		//time vars
-			var t1 = 0
-			var t2 = 0
-			var t3 = 0
-			var t4 = 0
+			temp.t1 = 0
+			temp.t2 = 0
+			temp.t3 = 0
+			temp.t4 = 0
 		//player vars
-			var lvl = 0
-			var money = 0
-			var exp = 0
-			var expnext = 0
-			var powerlevel = 8
-			var power = 0
-			var multipler = 0.50
+			save.lvl = 0
+			save.money = 0
+			save.exp = 0
+			save.expnext = 0
+			save.powerlevel = 8
+			save.power = 0
+			save.multipler = 0.50
 		//enemy vars
-			var enemylvl = 1
-			var enemyhp = 50
-			var enemymaxhp = 50
-			var enemyexp = 40
-			var enemymoney = 25
+			save.enemylvl = 1
+			save.enemyhp = 50
+			save.enemymaxhp = 50
+			save.enemyexp = 40
+			save.enemymoney = 25
+		//level diffrence bonuses
+			temp.bonusexp = 0
+			temp.bonusmoney = 0
 		//cost vars - look for lvlup function for base values
-			var powercost =         666
-			var multiplercost =     666
-			var enemycost =         666
+			save.powercost =         666
+			save.multiplercost =     666
+			save.enemycost =         666
+		//variable just to store setInterval function because of start buttons.
+			temp.interval
+			temp.mode = ""
 		//functions
 		lvlup()
+		function startSpeedrun() {
+			document.getElementById('start').style.display = "none"
+			document.getElementById("main").style.display = "block"
+			temp.mode = "speedrun"
+			temp.interval = setInterval(function(){tick()},100)
+		}
+		function startInfinite() {
+			document.getElementById('start').style.display = "none"
+			document.getElementById("main").style.display = "block"
+			temp.mode = "infinite"
+			temp.interval = setInterval(function(){tick()},100)
+		}
 		function buypower() {
-			if (money >= powercost) {
-				money = money - powercost
-				powercost = Math.ceil(powercost * 1.2)
-				powerlevel = powerlevel + 1
-				power = powerlevel * (lvl * 0.2 + 5)
+			if (save.money >= save.save.powercost) {
+				save.money = save.money - save.save.powercost
+				save.save.powercost = Math.ceil(save.save.powercost * 1.2)
+				save.save.powerlevel = save.save.powerlevel + 1
+				save.power = save.save.powerlevel * (save.lvl * 0.2 + 5)
 			}
 		}
 		function buymultipler() {
-			if (money >= multiplercost) {
-				money = money - multiplercost
-				multiplercost = Math.ceil(multiplercost * 1.2)
-				multipler = multipler + 0.05
+			if (save.money >= save.save.multiplercost) {
+				save.money = save.money - save.save.multiplercost
+				save.save.multiplercost = Math.ceil(save.save.multiplercost * 1.2)
+				save.multipler = save.multipler + 0.05
 			}
 		}
 		function buyenemy() {
-			if (money >= enemycost) {
-				money = money - enemycost
-				enemycost = Math.ceil(enemycost * 1.35)
-				enemylvl++
-				enemymaxhp = Math.floor(enemymaxhp * 1.2)
-				enemyhp = enemymaxhp
-				enemyexp = Math.floor(enemyexp * 1.33)
-				enemymoney = Math.floor(enemymoney * 1.2)
+			if (save.money >= save.enemycost) {
+				save.money = save.money - save.enemycost
+				save.enemycost = Math.ceil(save.enemycost * 1.35)
+				enemysave.lvl++
+				save.enemymaxhp = Math.floor(save.enemymaxhp * 1.2)
+				save.save.enemylvl = save.enemymaxhp
+				enemysave.exp = Math.floor(enemysave.exp * 1.33)
+				enemysave.money = Math.floor(enemysave.money * 1.2)
 			}
 		}
 		function redraw() {
-			document.getElementById('money').innerHTML = money
-			document.getElementById('time').innerHTML = String(t4)+':'+String(t3)+String(t2)+'.'+String(t1)
-			document.getElementById('moneypersec').innerHTML = Math.round((power*multipler)/enemymaxhp*enemymoney)
-			document.getElementById('exppersec').innerHTML = Math.round((power*multipler)/enemymaxhp*enemyexp)
-			document.getElementById('lvl').innerHTML = lvl
-			document.getElementById('exp').innerHTML = exp
-			document.getElementById('expnext').innerHTML = expnext
-			document.getElementById('power').innerHTML = Math.round(power*10)/10
-			document.getElementById('multipler').innerHTML = Math.round(multipler*100)/100
-			document.getElementById('dps').innerHTML = Math.round(power*multipler*10)/10
-			document.getElementById('powercost').innerHTML = powercost
-			document.getElementById('powergain').innerHTML = Math.round(lvl * 2 + 50)/10
-			document.getElementById('multiplercost').innerHTML = multiplercost
-			document.getElementById('enemylvl').innerHTML = enemylvl
-			document.getElementById('enemyhp').innerHTML = Math.round(enemyhp)
-			document.getElementById('enemymaxhp').innerHTML = enemymaxhp
-			document.getElementById('enemyexp').innerHTML = enemyexp
-			document.getElementById('enemymoney').innerHTML = enemymoney
-			document.getElementById('enemycost').innerHTML = enemycost
-			if (money < powercost) {document.getElementById('buypower').disabled = true} else {document.getElementById('buypower').disabled = false}
-			if (money < multiplercost) {document.getElementById('buymultipler').disabled = true} else {document.getElementById('buymultipler').disabled = false}
-			if (money < enemycost) {document.getElementById('buyenemy').disabled = true} else {document.getElementById('buyenemy').disabled = false}
+			document.getElementById('money').innerHTML = save.money
+			document.getElementById('time').innerHTML = String(temp.t4)+':'+String(temp.t3)+String(temp.t2)+'.'+String(temp.t1)
+			document.getElementById('moneypersec').innerHTML = Math.round((save.power*save.multipler)/save.enemymaxhp*save.enemymoney)
+			document.getElementById('exppersec').innerHTML = Math.round((save.power*save.multipler)/save.enemymaxhp*save.enemyexp)
+			document.getElementById('lvl').innerHTML = save.lvl
+			document.getElementById('exp').innerHTML = save.exp
+			document.getElementById('expnext').innerHTML = save.expnext
+			document.getElementById('power').innerHTML = Math.round(save.power*10)/10
+			document.getElementById('multipler').innerHTML = Math.round(save.multipler*100)/100
+			document.getElementById('dps').innerHTML = Math.round(save.power*save.multipler*10)/10
+			document.getElementById('powercost').innerHTML = save.powercost
+			document.getElementById('powergain').innerHTML = Math.round(save.lvl * 2 + 50)/10
+			document.getElementById('multiplercost').innerHTML = save.multiplercost
+			document.getElementById('enemylvl').innerHTML = save.enemylvl
+			document.getElementById('enemyhp').innerHTML = Math.round(save.enemyhp)
+			document.getElementById('enemymaxhp').innerHTML = save.enemymaxhp
+			document.getElementById('enemyexp').innerHTML = save.enemyexp
+			document.getElementById('enemymoney').innerHTML = save.enemymoney
+			document.getElementById('enemycost').innerHTML = save.enemycost
+			if (temp.bonusexp != 0) {
+				document.getElementById('bonusexp').innerHTML = " (+"+String(bonussave.exp)+")"
+			} else {document.getElementById('bonusexp').innerHTML = ""}
+			if (temp.bonusmoney != 0) {
+				document.getElementById('bonusmoney').innerHTML = " (+"+String(bonussave.money)+")"
+			} else {document.getElementById('bonusmoney').innerHTML = ""}
+			if (save.money < save.powercost) {document.getElementById('buypower').disabled = true} else {document.getElementById('buypower').disabled = false}
+			if (save.money < save.multiplercost) {document.getElementById('buymultipler').disabled = true} else {document.getElementById('buymultipler').disabled = false}
+			if (save.money < save.enemycost) {document.getElementById('buyenemy').disabled = true} else {document.getElementById('buyenemy').disabled = false}
 		}
 		function lvlup() {
-			lvl++
-			exp = exp - expnext
-			expnext = Math.floor(Math.pow(1.33,lvl-1)*100)
-			powercost = Math.ceil(powercost*0.92)
-			multiplercost = Math.ceil(multiplercost*0.92)
-			enemycost = Math.ceil(enemycost*0.9)
-			power = powerlevel * (lvl * 0.2 + 5)
-			if (lvl==1) {
+			save.lvl++
+			save.exp = save.exp - save.expnext
+			save.expnext = Math.floor(Math.pow(1.33,save.lvl-1)*100)
+			save.powercost = Math.ceil(save.powercost*0.92)
+			save.multiplercost = Math.ceil(save.multiplercost*0.92)
+			save.enemycost = Math.ceil(save.enemycost*0.9)
+			save.power = save.powerlevel * (save.lvl * 0.2 + 5)
+			if (save.lvl==1) {
 				//base costs
-				powercost = 25
-				multiplercost = 25
-				enemycost = 50
+				save.powercost = 25
+				save.multiplercost = 25
+				save.enemycost = 50
 			}
-			if (lvl>=40) {endgame()}
+			if (save.lvl>=40 && temp.mode=='speedrun') {endgame()}
 		}
 		function tick() {
 			//time
-			t1++
-			if (t1>9){
-				t1 = 0
-				t2++
+			temp.t1++
+			if (temp.t1>9){
+				temp.t1 = 0
+				temp.t2++
 			}
-			if (t2>9){
-				t2 = 0
-				t3++
+			if (temp.t2>9){
+				temp.t2 = 0
+				temp.t3++
 			}
-			if (t3>5){
-				t3 = 0
-				t4++
+			if (temp.t3>5){
+				temp.t3 = 0
+				temp.t4++
 			}
 			//damage
-			if (enemyhp <= 0) {
-				enemyhp = enemymaxhp
-				exp = exp + enemyexp
-				//high level enemy bonus
-				if(lvl<enemylvl){exp = exp + Math.round(enemyexp * 0.1 * (enemylvl-lvl))}
-				money = money + enemymoney
-				if(enemylvl<lvl){money = money + Math.round(enemymoney * 0.025 * (lvl-enemylvl))}
-				if (exp >= expnext) {lvlup()}
+			if (lvl<save.enemylvl) {bonussave.exp = Math.round(save.enemyexp * 0.1 * (save.enemylvl-save.lvl))} else {temp.bonusexp = 0}
+			if (save.enemylvl<lvl) {bonussave.money = Math.round(save.enemymoney * 0.025 * (save.lvl-save.enemylvl))} else {temp.bonusmoney = 0}
+			if (save.enemyhp <= 0) {
+				save.enemyhp = save.enemymaxhp
+				save.exp = save.exp + save.enemyexp + temp.bonusexp
+				save.money = save.money + save.enemymoney + temp.bonusexp
+				while (save.exp >= save.expnext) {lvlup()}
 			} else {
-				enemyhp = enemyhp - power*multipler/10
-				if (enemyhp < 0) {enemyhp=0}
+				save.enemyhp = save.enemyhp - save.power*save.multipler/10
+				if (save.enemyhp < 0) {save.enemylvl=0}
 			}
 			//obligatory redraw function
 			redraw()
 		}
 		function endgame() {
-			clearInterval(interval)
-			document.body.innerHTML = '<div style="text-align:center; font-size:2em;">You have finished the game in</div><div style="text-align:center; font-size:3em;">'+String(t4)+':'+String(t3)+String(t2)+'.'+String(t1)+'</div>'
+			clearInterval(temp.interval)
+			document.body.innerHTML = '<div style="text-align:center; font-size:2em;">You have finished the game in</div><div style="text-align:center; font-size:3em;">'+String(temp.t4)+':'+String(temp.t3)+String(temp.t2)+'.'+String(temp.t1)+'</div>'
 		}
-		var interval = setInterval(function(){tick()},100)
+/*
+          RRRR    EEEEE   K   K  TTTTT
+   #  #   R   R   E       K  K     T
+  ######  R   R   E       K K      T
+   #  #   RRRR    EEEEE   KK       T
+  ######  R R     E       K K      T
+   #  #   R  R    E       K  K     T
+          R   R   EEEEE   K   K    T
+*/
 	</script>
 </body>
+</html>
