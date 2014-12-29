@@ -154,15 +154,15 @@
 		function buypower() {
 			if (save.money >= save.save.powercost) {
 				save.money = save.money - save.save.powercost
-				save.save.powercost = Math.ceil(save.save.powercost * 1.2)
-				save.save.powerlevel = save.save.powerlevel + 1
+				save.powercost = Math.ceil(save.save.powercost * 1.2)
+				save.powerlevel = save.save.powerlevel + 1
 				save.power = save.save.powerlevel * (save.lvl * 0.2 + 5)
 			}
 		}
 		function buymultipler() {
 			if (save.money >= save.save.multiplercost) {
 				save.money = save.money - save.save.multiplercost
-				save.save.multiplercost = Math.ceil(save.save.multiplercost * 1.2)
+				save.multiplercost = Math.ceil(save.save.multiplercost * 1.2)
 				save.multipler = save.multipler + 0.05
 			}
 		}
@@ -170,11 +170,11 @@
 			if (save.money >= save.enemycost) {
 				save.money = save.money - save.enemycost
 				save.enemycost = Math.ceil(save.enemycost * 1.35)
-				enemysave.lvl++
+				temp.enemylvl++
 				save.enemymaxhp = Math.floor(save.enemymaxhp * 1.2)
-				save.save.enemylvl = save.enemymaxhp
-				enemysave.exp = Math.floor(enemysave.exp * 1.33)
-				enemysave.money = Math.floor(enemysave.money * 1.2)
+				save.enemylvl = save.enemymaxhp
+				save.enemyexp = Math.floor(enemysave.exp * 1.33)
+				save.enemymoney = Math.floor(enemysave.money * 1.2)
 			}
 		}
 		function redraw() {
