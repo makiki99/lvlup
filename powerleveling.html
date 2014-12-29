@@ -154,14 +154,14 @@
 		function buypower() {
 			if (save.money >= save.powercost) {
 				save.money = save.money - save.powercost
-				save.powercost = Math.ceil(save.save.powercost * 1.2)
+				save.powercost = Math.ceil(save.powercost * 1.2)
 				save.powerlevel = save.save.powerlevel + 1
 				save.power = save.save.powerlevel * (save.lvl * 0.2 + 5)
 			}
 		}
 		function buymultipler() {
 			if (save.money >= save.multiplercost) {
-				save.money = save.money - save.save.multiplercost
+				save.money = save.money - save.multiplercost
 				save.multiplercost = Math.ceil(save.save.multiplercost * 1.2)
 				save.multipler = save.multipler + 0.05
 			}
