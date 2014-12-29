@@ -152,7 +152,7 @@
 			temp.interval = setInterval(function(){tick()},100)
 		}
 		function buypower() {
-			if (save.money >= save.save.powercost) {
+			if (save.money >= save.powercost) {
 				save.money = save.money - save.save.powercost
 				save.powercost = Math.ceil(save.save.powercost * 1.2)
 				save.powerlevel = save.save.powerlevel + 1
@@ -160,7 +160,7 @@
 			}
 		}
 		function buymultipler() {
-			if (save.money >= save.save.multiplercost) {
+			if (save.money >= save..multiplercost) {
 				save.money = save.money - save.save.multiplercost
 				save.multiplercost = Math.ceil(save.save.multiplercost * 1.2)
 				save.multipler = save.multipler + 0.05
