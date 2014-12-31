@@ -18,11 +18,12 @@
 	</style>
 </head>
 <body style='font-family:sans-serif;'>
+	<!--main menu-->
 	<div id='start'>
 		<button onclick='startSpeedrun()' class='startmenu' style='top:50px;'>Speedrun mode</button>
-		<button onclick='startInfinite()' class='startmenu' style='top:100px;' disabled>Infinite mode (soon&#0153;)</button>
+		<button onclick='startInfinite()' class='startmenu' style='top:100px;'>Infinite mode (soon&#0153;)</button>
 	</div>
-	
+	<!--game screen-->
 	<div id='main' style='display:none'>
 	<div id='header' style='position:absolute; top:0%; left:0%; height:30%; width:100%; text-align: center;'>
 		<h1>$<span id='money'>0</span><br/></h1>
@@ -121,6 +122,8 @@
 			save.powerlevel = 8
 			save.power = 0
 			save.multipler = 0.50
+		//prestige vars which will be used soon(tm)
+			save.gems = 0
 		//enemy vars
 			save.enemylvl = 1
 			save.enemyhp = 50
@@ -248,7 +251,7 @@
 				while (save.exp >= save.expnext) {lvlup()}
 			} else {
 				save.enemyhp = save.enemyhp - save.power*save.multipler/10
-				if (save.enemyhp < 0) {save.enemylvl=0}
+				if (save.enemyhp < 0) {save.enemyhp=0}
 			}
 			//obligatory redraw function
 			redraw()
@@ -256,6 +259,40 @@
 		function endgame() {
 			clearInterval(temp.interval)
 			document.body.innerHTML = '<div style="text-align:center; font-size:2em;">You have finished the game in</div><div style="text-align:center; font-size:3em;">'+String(temp.t4)+':'+String(temp.t3)+String(temp.t2)+'.'+String(temp.t1)+'</div>'
+		}
+		function save() {
+			if (mode == 'infinite') {
+				localStorage.infinite = JSON.stringify(save)
+			}
+		}
+		function load() {
+			if (mode == 'infinite') {
+				var derp = JSON.parse(localStorage.infinite)
+				if (typeof derp.lvl !== "undefined") {save.lvl = 0}
+				if (typeof derp.money !== "undefined") {save.money = 0}
+				if (typeof derp.exp !== "undefined") {save.exp = 0}
+				if (typeof derp.expnext !== "undefined") {save.expnext = 0}
+				if (typeof derp.powerlevel !== "undefined") {save.powerlevel = 8}
+				if (typeof derp.power !== "undefined") {save.power = 0}
+				if (typeof derp.multipler !== "undefined") {save.multipler = 0.50}
+				if (typeof derp.enemylvl !== "undefined") {save.enemylvl = 1}
+				if (typeof derp.enemyhp !== "undefined") {save.enemyhp = 50}
+				if (typeof derp.enemymaxhp !== "undefined") {save.enemymaxhp = 50}
+				if (typeof derp.enemyexp !== "undefined") {save.enemyexp = 40}
+				if (typeof derp.enemymoney !== "undefined") {save.enemymoney = 25}
+				if (typeof derp.powercost !== "undefined") {save.powercost = 1337}
+				if (typeof derp.multiplercost !== "undefined") {save.multiplercost = 1337}
+				if (typeof derp.enemycost !== "undefined") {save.enemycost = 1337}
+				if (typeof derp.gems !== "undefined") {save.gems = 0}
+				if (save.lvl == 0) {lvlup()}
+			}
+		}
+		function reset() {
+			localStorage.removeItem("save")
+			load()
+		}
+		function prestige() {
+			//soon(tm)
 		}
 /*
           RRRR    EEEEE   K   K  TTTTT
