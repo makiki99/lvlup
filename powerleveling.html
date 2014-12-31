@@ -173,9 +173,9 @@
 			if (save.money >= save.enemycost) {
 				save.money = save.money - save.enemycost
 				save.enemycost = Math.ceil(save.enemycost * 1.35)
-				temp.enemylvl++
+				save.enemylvl++
 				save.enemymaxhp = Math.floor(save.enemymaxhp * 1.2)
-				save.enemylvl = save.enemymaxhp
+				save.enemyhp = save.enemymaxhp
 				save.enemyexp = Math.floor(save.enemyexp * 1.33)
 				save.enemymoney = Math.floor(save.enemymoney * 1.2)
 			}
